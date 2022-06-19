@@ -2,13 +2,20 @@
 //const response = require('./response'); 1
 //const read = require('./response'); // 1 by only exporting the read function in response.js, assign the function, and call it directly.
 
-const { read } = require('./response')
-const { send } = require('./request')
+// const { read } = require('./internals/response')
+// const { send } = require('./internals/request')
+// const internals = require('./internals'); // request module defined in internals/index.js 3
+const {send, read } = require('./internals'); // destructure functions from 3
 
 function makeRequest(url, data) {
-    send(url, data);
+    //internals.request.send(url, data);2 
+    //internals.send(url, data); 3 
+    send(url, data); // 3 after destructuring
     //response.read(); 1
-    return read(); //1
+    //return internals.response.read(); //1
+    //return internals.response.read(); 2
+    //return internals.read(); 3
+    return read(); //3 after destructuring
 }
 
 const repsonseData = makeRequest('https://google.com', 'hello');
