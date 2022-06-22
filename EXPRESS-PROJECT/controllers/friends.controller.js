@@ -4,7 +4,7 @@ function postFriend(req, res) {
     if (!req.body.name) { //if no name, or no data (object doesn't exist)
         return res.status(400).json({ //return json message object      //break execution!!
             error: 'Missing friend name.'
-        }) //400 error, client side. 
+        }) 
     }
     const newFriend = {
         id: model.length, //friends array
