@@ -6,6 +6,9 @@ const messageRouter = require('./routes/message.router');
 
 const app = express();
 
+app.set('view engine', 'hbs'); //set hbs as template engine
+app.set('views', path.join(__dirname, 'views')); //use path.join to find the views stored in the views directory.
+
 const PORT = 3000;
 
 
@@ -20,6 +23,13 @@ app.use((req, res, next) => {
 app.use('/site', express.static(path.join(__dirname, 'public'))); //website in public folder.    <-- serves all files under one specific path.
 // /site allows for a static page
 app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.render('index', { //rendering handlebars file called index. passing in an object that contains the variables we want filled in.
+        title: "It's a Me!",
+        caption: `Let's go skiing!`
+    }); 
+});
 
 //allow friendsRouter to be used as middleware.
 //mounting friendsRouter on the app object.
