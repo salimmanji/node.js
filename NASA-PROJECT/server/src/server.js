@@ -9,14 +9,15 @@ const app = require('./app')
 const { loadPlanetsData } = require('./models/planets.model')
 
 const PORT = process.env.PORT || 8000;
+const HOSTNAME = '192.168.2.127';
 
 const server = http.createServer(app); //pass express into it. Any middleware will also be passed along
 
 async function startServer() {
     await loadPlanetsData();
 
-    server.listen(PORT, () => {
-        console.log(`Listening on port ${PORT}...`);
+    server.listen(PORT, HOSTNAME, () => {
+        console.log(`Listening on ${HOSTNAME} : ${PORT}...`);
     });
 }
 
