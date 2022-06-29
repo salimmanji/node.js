@@ -9,7 +9,7 @@ const app = require('./app')
 const { loadPlanetsData } = require('./models/planets.model')
 
 const PORT = process.env.PORT || 8000;
-const HOSTNAME = '192.168.2.127';
+const HOSTNAME = 'localhost';
 
 const server = http.createServer(app); //pass express into it. Any middleware will also be passed along
 
