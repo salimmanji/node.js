@@ -9,15 +9,15 @@ const launchesRouter = require('./routes/launches/launches.router');
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:8000',
 }));
 
 app.use(morgan('combined'));
 app.use(express.json()); // parse any json from incoming requests middleware
 app.use(express.static(path.join(__dirname, '..', 'public'))); // Serve static site with assets in server/public
 
-app.use(planetsRouter);
-app.use(launchesRouter);
+app.use('/planets', planetsRouter);
+app.use('/launches',launchesRouter);
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html')); //change the route here
 });
