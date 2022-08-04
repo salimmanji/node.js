@@ -3,24 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('csv-parse');
 
-const habitablePlanets = [];
+const planets = require('./planets.mongo');
 
 function isHabitablePlanet(planet) {
     return planet['koi_disposition'] === 'CONFIRMED'
         && planet['koi_insol'] > 0.36 && planet['koi_insol'] < 1.11
         && planet['koi_prad'] < 1.6;
 }
-
-/*
-const promise = new Promise((resolve, reject) => {
-    resolve(42);
-});
-promise.then((result) => {
- Do something with result.
-});
-const result = await promise; //Async code, promise first resolves, then continues
-console.log(result);
-*/
 
 function loadPlanetsData() {
     return new Promise((resolve, reject) => {
@@ -29,27 +18,43 @@ function loadPlanetsData() {
                 comment: '#',
                 columns: true
             })) // allows for return of JSON objects
-            .on('data', (data) => {
-                if (isHabitablePlanet(data))
-                    habitablePlanets.push(data);
+            .on('data', async (data) => {
+                if (isHabitablePlanet(data)) {
+                    savePlanet(data);
+                }
             })
             .on('error', (err) => {
                 console.log(err);
                 reject(err);
             })
-            .on('end', () => {
-                //console.log(habitablePlanets);
-                // console.log(habitablePlanets.map((p) => {
-                //     return p['kepler_name'];
-                // }));
-                console.log(`${habitablePlanets.length} planets found!`);
+            .on('end', async () => {
+                const countPlanetsFound = (await getAllPlanets()).length;
+                console.log(`${countPlanetsFound} planets found!`);
                 resolve(); //don't need to resolve anything, we are sending back the habitable planets array in export after promise is resolved.
             });
     });
 }
 
-function getAllPlanets() {
-    return habitablePlanets;
+async function getAllPlanets() {
+    return await planets.find({}, {
+        //second object is projection
+        '_id': 0, '__v': 0,
+    });
+}
+
+async function savePlanet(planet) {
+    try {
+        await planets.updateOne({
+            keplerName: planet.kepler_name,
+        }, {
+            keplerName: planet.kepler_name,
+        }, {
+            upsert: true,
+        });
+    } catch(err) {
+        console.error(`Could not save planet ${err}`);
+    }
+    
 }
 
 
